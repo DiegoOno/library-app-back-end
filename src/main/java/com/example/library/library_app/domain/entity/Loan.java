@@ -3,13 +3,22 @@ package com.example.library.library_app.domain.entity;
 import com.example.library.library_app.domain.enums.LoanStatus;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity(name = "loan")
 public class Loan {
     public Loan() {}
 
-    public Loan(LibraryUser libraryUser, Book book, LocalDate loanDate, LocalDate returnDate, LoanStatus status) {
+    public Loan(LibraryUser libraryUser, Book book, LocalDateTime loanDate, LocalDateTime returnDate, LoanStatus status) {
+        this.libraryUser = libraryUser;
+        this.book = book;
+        this.loanDate = loanDate;
+        this.returnDate = returnDate;
+        this.status = status;
+    }
+
+    public Loan(Long id, LibraryUser libraryUser, Book book, LocalDateTime loanDate, LocalDateTime returnDate, LoanStatus status) {
+        this.id = id;
         this.libraryUser = libraryUser;
         this.book = book;
         this.loanDate = loanDate;
@@ -19,7 +28,7 @@ public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "library_user_id", referencedColumnName = "id", nullable = false, updatable = false)
@@ -30,20 +39,25 @@ public class Loan {
     private Book book;
 
     @Column(name = "loan_date", nullable = false)
-    private LocalDate loanDate;
+    private LocalDateTime loanDate;
 
     @Column(name = "return_date", nullable = false)
-    private LocalDate returnDate;
+    private LocalDateTime returnDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private LoanStatus status;
 
-    public Integer getId() {
+    public void mergeForUpdate(Loan loan) {
+        this.status = loan.getStatus();
+        this.returnDate = loan.getReturnDate();
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -63,19 +77,19 @@ public class Loan {
         this.book = book;
     }
 
-    public LocalDate getLoanDate() {
+    public LocalDateTime getLoanDate() {
         return loanDate;
     }
 
-    public void setLoanDate(LocalDate loanDate) {
+    public void setLoanDate(LocalDateTime loanDate) {
         this.loanDate = loanDate;
     }
 
-    public LocalDate getReturnDate() {
+    public LocalDateTime getReturnDate() {
         return returnDate;
     }
 
-    public void setReturnDate(LocalDate returnDate) {
+    public void setReturnDate(LocalDateTime returnDate) {
         this.returnDate = returnDate;
     }
 

@@ -2,15 +2,27 @@ package com.example.library.library_app.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "library_user")
 public class LibraryUser {
     public LibraryUser() {}
 
-    public LibraryUser(String name, String email, LocalDate registerDate, String phone) {
+    public LibraryUser(String name, String email, LocalDateTime registerDate, String phone) {
+        this.name = name;
+        this.email = email;
+        this.registerDate = registerDate;
+        this.phone = phone;
+    }
+
+    public LibraryUser(Long id, String name, String email, LocalDateTime registerDate, String phone) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.registerDate = registerDate;
@@ -19,29 +31,41 @@ public class LibraryUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
+    @NotNull(message = "Name is required")
     private String name;
 
-    @Email
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
+    @Email(message = "Invalid email format")
+    @NotNull(message = "Email is required")
     private String email;
 
-    @Column(name = "register_date", nullable = false)
-    private LocalDate registerDate;
+    @Column(name = "register_date")
+    @NotNull(message = "Register date is required")
+    @PastOrPresent(message = "Register date cannot be in the future")
+    private LocalDateTime registerDate;
 
     @Column(name = "phone", nullable = false)
+    @NotNull(message = "Phone number is required")
     private String phone;
 
     @OneToMany(mappedBy = "libraryUser", cascade = CascadeType.ALL)
-    private List<Loan> loans;
+    private List<Loan> loans = new ArrayList<>();;
 
-    public Integer getId() {
+    public void mergeForUpdate(LibraryUser libraryUser) {
+        this.name = libraryUser.getName();
+        this.email = libraryUser.getEmail();
+        this.registerDate = libraryUser.getRegisterDate();
+        this.phone = libraryUser.getPhone();
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -61,11 +85,11 @@ public class LibraryUser {
         this.email = email;
     }
 
-    public LocalDate getRegisterDate() {
+    public LocalDateTime getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(LocalDate registerDate) {
+    public void setRegisterDate(LocalDateTime registerDate) {
         this.registerDate = registerDate;
     }
 
@@ -75,5 +99,13 @@ public class LibraryUser {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
+    }
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
     }
 }

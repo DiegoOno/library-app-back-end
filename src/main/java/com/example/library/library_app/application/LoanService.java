@@ -1,6 +1,8 @@
 package com.example.library.library_app.application;
 
+import com.example.library.library_app.domain.entity.Book;
 import com.example.library.library_app.domain.entity.Loan;
+import com.example.library.library_app.domain.enums.LoanStatus;
 import com.example.library.library_app.domain.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,11 @@ public class LoanService {
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     public Loan create(Loan loan) {
         return loanRepository.save(loan);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Loan> findByBookAndStatus(Book book, LoanStatus status) {
+        return loanRepository.findByBookAndStatus(book, status);
     }
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)

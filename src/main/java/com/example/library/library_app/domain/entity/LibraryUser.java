@@ -34,21 +34,15 @@ public class LibraryUser {
     private Long id;
 
     @Column(name = "name")
-    @NotNull(message = "Name is required")
     private String name;
 
     @Column(name = "email")
-    @Email(message = "Invalid email format")
-    @NotNull(message = "Email is required")
     private String email;
 
     @Column(name = "register_date")
-    @NotNull(message = "Register date is required")
-    @PastOrPresent(message = "Register date cannot be in the future")
     private LocalDateTime registerDate;
 
     @Column(name = "phone", nullable = false)
-    @NotNull(message = "Phone number is required")
     private String phone;
 
     @OneToMany(mappedBy = "libraryUser", cascade = CascadeType.ALL)

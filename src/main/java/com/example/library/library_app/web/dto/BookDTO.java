@@ -1,6 +1,7 @@
 package com.example.library.library_app.web.dto;
 
 import com.example.library.library_app.domain.entity.Book;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -8,11 +9,22 @@ import java.util.stream.Collectors;
 
 public class BookDTO {
     private Long id;
+
+    @NotNull(message = "Title is required")
     private String title;
+
+    @NotNull(message = "Author is required")
     private String author;
+
+    @NotNull(message = "Release date is required")
     private LocalDate releaseDate;
+
+    @NotNull(message = "ISBN is required")
     private String isbn;
+
+    @NotNull(message = "Category is required")
     private String category;
+
     private List<LoanDTO> loans;
 
     public BookDTO() {

@@ -2,9 +2,11 @@ package com.example.library.library_app.application;
 
 import com.example.library.library_app.domain.entity.LibraryUser;
 import com.example.library.library_app.domain.repository.LibraryUserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +37,9 @@ public class LibraryUserService {
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     public LibraryUser update(LibraryUser libraryUser) {
-        LibraryUser user = libraryUserRepository.findById(libraryUser.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        LibraryUser user = libraryUserRepository.findById(libraryUser.getId()).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "User not found with id " + libraryUser.getId()
+        ));
         user.mergeForUpdate(libraryUser);
 
         return libraryUserRepository.save(user);

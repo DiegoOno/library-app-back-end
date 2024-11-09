@@ -1,17 +1,32 @@
 package com.example.library.library_app.web.dto;
 
 import com.example.library.library_app.domain.entity.LibraryUser;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class LibraryUserDTO {
+
     private Long id;
+
+    @NotNull(message = "Name is required")
     private String name;
+
+    @NotNull(message = "Email is required")
+    @Email
     private String email;
+
+    @NotNull(message = "Register date is required")
+    @PastOrPresent(message = "Register date cannot be in the future")
     private LocalDateTime registerDate;
+
+    @NotNull(message = "Phone is required")
     private String phone;
+
     private List<LoanDTO> loans;
 
     public LibraryUserDTO() {

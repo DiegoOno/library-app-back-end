@@ -1,11 +1,9 @@
 package com.example.library.library_app.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +44,7 @@ public class LibraryUser {
     private String phone;
 
     @OneToMany(mappedBy = "libraryUser", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Loan> loans = new ArrayList<>();;
 
     public void mergeForUpdate(LibraryUser libraryUser) {

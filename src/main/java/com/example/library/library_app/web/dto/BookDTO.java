@@ -1,6 +1,7 @@
 package com.example.library.library_app.web.dto;
 
 import com.example.library.library_app.domain.entity.Book;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -25,6 +26,7 @@ public class BookDTO {
     @NotNull(message = "Category is required")
     private String category;
 
+    @JsonIgnore
     private List<LoanDTO> loans;
 
     public BookDTO() {

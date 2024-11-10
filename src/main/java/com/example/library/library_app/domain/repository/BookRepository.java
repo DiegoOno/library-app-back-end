@@ -12,4 +12,7 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long>{
     @Query(value = "SELECT b.* FROM book b WHERE b.category IN :categories AND b.id NOT IN (SELECT l.book_id FROM loan l WHERE l.library_user_id = :libraryUserId)", nativeQuery = true)
     List<Book> findRecommendationsByCategoriesAndLibraryUserId(@Param("categories") List<String> categories, @Param("libraryUserId") Long libraryUserId);
+
+    @Query(value = "SELECT b.* FROM book b WHERE b.id NOT IN (SELECT l.book_id FROM loan l WHERE l.status = 'ACTIVE' or l.status = 'OVERDUE')", nativeQuery = true)
+    List<Book> findBooksAvailableForLoan();
 }

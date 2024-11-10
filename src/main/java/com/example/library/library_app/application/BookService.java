@@ -24,6 +24,11 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
+    public List<Book> findBooksAvailableForLoan() {
+        return bookRepository.findBooksAvailableForLoan();
+    }
+
+    @Transactional(readOnly = true)
     public Optional<Book> findById(Long id) {
         return bookRepository.findById(id);
     }

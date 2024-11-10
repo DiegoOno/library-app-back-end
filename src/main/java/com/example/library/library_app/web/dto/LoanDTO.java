@@ -13,10 +13,10 @@ public class LoanDTO {
     private Long id;
 
     @NotNull(message = "Book is required")
-    private Long bookId;
+    private Book book;
 
     @NotNull(message = "User is required")
-    private Long libraryUserId;
+    private LibraryUser libraryUser;
 
     @NotNull(message = "Loan date is required")
     @PastOrPresent(message = "Loan date cannot be in the future")
@@ -28,12 +28,13 @@ public class LoanDTO {
     @NotNull(message = "Status is required")
     private LoanStatus status;
 
-    public LoanDTO() {}
+    public LoanDTO() {
+    }
 
-    public LoanDTO(Long id, Long bookId, Long libraryUserId, LocalDateTime loanDate, LocalDateTime returnDate, LoanStatus status) {
+    public LoanDTO(Long id, Book book, LibraryUser libraryUser, LocalDateTime loanDate, LocalDateTime returnDate, LoanStatus status) {
         this.id = id;
-        this.bookId = bookId;
-        this.libraryUserId = libraryUserId;
+        this.book = book;
+        this.libraryUser = libraryUser;
         this.loanDate = loanDate;
         this.returnDate = returnDate;
         this.status = status;
@@ -42,29 +43,24 @@ public class LoanDTO {
     public static LoanDTO fromEntity(Loan loan) {
         return new LoanDTO(
                 loan.getId(),
-                loan.getBook().getId(),
-                loan.getUser().getId(),
+                loan.getBook(),
+                loan.getUser(),
                 loan.getLoanDate(),
                 loan.getReturnDate(),
                 loan.getStatus()
         );
     }
 
-    public static Loan toEntity(LoanDTO loanDTO, BookDTO bookDTO, LibraryUserDTO libraryUserDTO) {
-        Book book = BookDTO.toEntity(bookDTO);
-        LibraryUser libraryUser = LibraryUserDTO.toEntity(libraryUserDTO);
-
+    public static Loan toEntity(LoanDTO loanDTO) {
         return new Loan(
                 loanDTO.getId(),
-                libraryUser,
-                book,
+                loanDTO.getLibraryUser(),
+                loanDTO.getBook(),
                 loanDTO.getLoanDate(),
                 loanDTO.getReturnDate(),
                 LoanStatus.valueOf(String.valueOf(loanDTO.getStatus()))
         );
     }
-
-
 
     public Long getId() {
         return id;
@@ -74,43 +70,43 @@ public class LoanDTO {
         this.id = id;
     }
 
-    public Long getBookId() {
-        return bookId;
+    public Book getBook() {
+        return book;
     }
 
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
+    public void setBook(Book book) {
+        this.book = book;
     }
 
-    public Long getLibraryUserId() {
-        return libraryUserId;
+    public LibraryUser getLibraryUser() {
+        return libraryUser;
     }
 
-    public void setLibraryUserId(Long libraryUserId) {
-        this.libraryUserId = libraryUserId;
+    public void setLibraryUser(LibraryUser libraryUser) {
+        this.libraryUser = libraryUser;
     }
 
-    public LocalDateTime getLoanDate() {
+    public @NotNull(message = "Loan date is required") @PastOrPresent(message = "Loan date cannot be in the future") LocalDateTime getLoanDate() {
         return loanDate;
     }
 
-    public void setLoanDate(LocalDateTime loanDate) {
+    public void setLoanDate(@NotNull(message = "Loan date is required") @PastOrPresent(message = "Loan date cannot be in the future") LocalDateTime loanDate) {
         this.loanDate = loanDate;
     }
 
-    public LocalDateTime getReturnDate() {
+    public @NotNull(message = "Return date is required") LocalDateTime getReturnDate() {
         return returnDate;
     }
 
-    public void setReturnDate(LocalDateTime returnDate) {
+    public void setReturnDate(@NotNull(message = "Return date is required") LocalDateTime returnDate) {
         this.returnDate = returnDate;
     }
 
-    public LoanStatus getStatus() {
+    public @NotNull(message = "Status is required") LoanStatus getStatus() {
         return status;
     }
 
-    public void setStatus(LoanStatus status) {
+    public void setStatus(@NotNull(message = "Status is required") LoanStatus status) {
         this.status = status;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.library.library_app.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -50,6 +51,7 @@ public class Book {
     private String category;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Loan> loans = new ArrayList<>();;
 
     public Long getId() {

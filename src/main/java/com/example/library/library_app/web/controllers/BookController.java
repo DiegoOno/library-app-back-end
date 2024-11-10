@@ -32,6 +32,13 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/available")
+    public List<BookDTO> findBooksAvailableForLoan() {
+        return bookService.findBooksAvailableForLoan().stream()
+                .map(BookDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<BookDTO> findById(@PathVariable("id") Long id) {
         return bookService.findById(id)

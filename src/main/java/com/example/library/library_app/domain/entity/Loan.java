@@ -30,11 +30,11 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "library_user_id", referencedColumnName = "id", nullable = false, updatable = false)
     private LibraryUser libraryUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id", referencedColumnName = "id", nullable = false, updatable = false)
     private Book book;
 
@@ -51,6 +51,9 @@ public class Loan {
     public void mergeForUpdate(Loan loan) {
         this.status = loan.getStatus();
         this.returnDate = loan.getReturnDate();
+        this.loanDate = loan.getLoanDate();
+        this.book = loan.getBook();
+        this.libraryUser = loan.getLibraryUser();
     }
 
     public Long getId() {
@@ -99,5 +102,13 @@ public class Loan {
 
     public void setStatus(LoanStatus status) {
         this.status = status;
+    }
+
+    public LibraryUser getLibraryUser() {
+        return libraryUser;
+    }
+
+    public void setLibraryUser(LibraryUser libraryUser) {
+        this.libraryUser = libraryUser;
     }
 }

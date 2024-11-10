@@ -1,6 +1,7 @@
 package com.example.library.library_app.web.dto;
 
 import com.example.library.library_app.domain.entity.LibraryUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -27,6 +28,7 @@ public class LibraryUserDTO {
     @NotNull(message = "Phone is required")
     private String phone;
 
+    @JsonIgnore
     private List<LoanDTO> loans;
 
     public LibraryUserDTO() {

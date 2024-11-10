@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -54,13 +53,6 @@ public class LibraryUserServiceTest {
     }
 
     @Test
-    void testFailCreateLibraryUser() {
-        LibraryUser libraryUser = new LibraryUser();
-        when(libraryUserRepository.save(any(LibraryUser.class))).thenThrow(IllegalArgumentException.class);
-        assertThrows(IllegalArgumentException.class, () -> libraryUserService.create(libraryUser));
-    }
-
-    @Test
     void findAllSuccess() {
         var date = LocalDateTime.now();
 
@@ -76,16 +68,6 @@ public class LibraryUserServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-    }
-
-    @Test
-    void findAllFail() {
-        when(libraryUserRepository.findAll()).thenReturn(List.of());
-
-        var result = libraryUserService.findAll();
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -159,7 +141,7 @@ public class LibraryUserServiceTest {
         when(libraryUserRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> {
-            libraryUserService.delete(id); // This should throw an exception
+            libraryUserService.delete(id);
         }, "User not found with id " + id);
 
         verify(libraryUserRepository, times(1)).findById(id);

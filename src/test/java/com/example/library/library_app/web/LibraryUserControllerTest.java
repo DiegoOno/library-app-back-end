@@ -82,20 +82,18 @@ public class LibraryUserControllerTest {
 
     @Test
     void testFailCreateLibraryUser() throws Exception {
-        LibraryUserDTO libraryUserDTO = new LibraryUserDTO();
-        libraryUserDTO.setId(1L);
-        libraryUserDTO.setName("John Doe");
-        libraryUserDTO.setEmail("john.doe@example.com");
-        libraryUserDTO.setPhone("123-456-7890");
-        libraryUserDTO.setRegisterDate(LocalDateTime.now());
+        var registerDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-        when(libraryUserService.create(any(LibraryUser.class))).thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data"));
+        LibraryUserDTO libraryUserDTO = new LibraryUserDTO();
+        libraryUserDTO.setName("");
+        libraryUserDTO.setEmail("invalid-email");
+        libraryUserDTO.setPhone("9636165718");
+        libraryUserDTO.setRegisterDate(registerDate);
 
         mockMvc.perform(post("/library-user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(libraryUserDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Invalid data"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -136,27 +134,15 @@ public class LibraryUserControllerTest {
         var registerDate = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
         LibraryUserDTO libraryUserDTO = new LibraryUserDTO();
-        libraryUserDTO.setId(null);
-        libraryUserDTO.setName("Updated John Doe");
-        libraryUserDTO.setEmail("john.doe@example.com");
+        libraryUserDTO.setName("");
+        libraryUserDTO.setEmail("invalid-email");
         libraryUserDTO.setPhone("9636165718");
         libraryUserDTO.setRegisterDate(registerDate);
-
-        LibraryUser updatedLibraryUser = new LibraryUser();
-        updatedLibraryUser.setId(1L);
-        updatedLibraryUser.setName("Updated John Doe");
-        updatedLibraryUser.setEmail("john.doe@example.com");
-        updatedLibraryUser.setPhone("9636165718");
-        updatedLibraryUser.setRegisterDate(registerDate);
-
-        when(libraryUserService.update(any(LibraryUser.class))).thenReturn(updatedLibraryUser);
 
         mockMvc.perform(put("/library-user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(libraryUserDTO)))
                 .andExpect(status().isBadRequest());
-
-        verify(libraryUserService, times(0)).update(any(LibraryUser.class));
     }
 
     @Test

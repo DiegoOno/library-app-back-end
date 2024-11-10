@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Entity(name = "loan")
 public class Loan {
-    public Loan() {}
+    public Loan() {
+    }
 
     public Loan(LibraryUser libraryUser, Book book, LocalDateTime loanDate, LocalDateTime returnDate, LoanStatus status) {
         this.libraryUser = libraryUser;

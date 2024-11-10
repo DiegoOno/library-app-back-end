@@ -9,11 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
 
 @RestController
 @RequestMapping("/library-user")
@@ -35,7 +34,9 @@ public class LibraryUserController {
     public ResponseEntity<LibraryUserDTO> findById(@PathVariable("id") Long id) {
         return libraryUserService.findById(id)
                 .map(libraryUser -> ResponseEntity.ok(LibraryUserDTO.fromEntity(libraryUser)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "LibraryUser not found with id " + id
+                ));
     }
 
     @PostMapping
@@ -53,10 +54,6 @@ public class LibraryUserController {
 
     @PutMapping
     public ResponseEntity<?> update(@Valid @RequestBody LibraryUserDTO libraryUserDTO, BindingResult result) {
-        if (isNull(libraryUserDTO.getId())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id is required");
-        }
-
         if (result.hasErrors()) {
             List<String> errorMessages = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
@@ -65,16 +62,12 @@ public class LibraryUserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
         }
 
-        var updatedUserDTO = LibraryUserDTO.fromEntity(libraryUserService.update(LibraryUserDTO.toEntity(libraryUserDTO)));
-        return ResponseEntity.status(HttpStatus.OK).body(updatedUserDTO);
+        LibraryUser updatedUser = libraryUserService.update(LibraryUserDTO.toEntity(libraryUserDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(LibraryUserDTO.fromEntity(updatedUser));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-        if (isNull(id)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id is required");
-        }
-
         try {
             libraryUserService.delete(id);
             return ResponseEntity.noContent().build();

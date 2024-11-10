@@ -14,8 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-
 @RestController
 @RequestMapping("/book")
 public class BookController {
@@ -64,10 +62,6 @@ public class BookController {
 
     @PutMapping
     public ResponseEntity<?> update(@RequestBody BookDTO bookDTO, BindingResult result) {
-        if (isNull(bookDTO.getId())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-
         if (result.hasErrors()) {
             List<String> errorMessages = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
@@ -77,11 +71,16 @@ public class BookController {
         }
 
         Book book = bookService.update(BookDTO.toEntity(bookDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(BookDTO.fromEntity(book));
+        return ResponseEntity.status(HttpStatus.OK).body(BookDTO.fromEntity(book));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        bookService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        try {
+            bookService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Book not found with id " + id);
+        }
     }
 }

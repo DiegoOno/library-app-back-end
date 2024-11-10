@@ -10,7 +10,8 @@ import java.util.List;
 
 @Entity(name = "library_user")
 public class LibraryUser {
-    public LibraryUser() {}
+    public LibraryUser() {
+    }
 
     public LibraryUser(String name, String email, LocalDateTime registerDate, String phone) {
         this.name = name;
@@ -35,6 +36,7 @@ public class LibraryUser {
     private String name;
 
     @Column(name = "email")
+    @Email
     private String email;
 
     @Column(name = "register_date")

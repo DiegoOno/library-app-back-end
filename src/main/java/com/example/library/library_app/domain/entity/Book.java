@@ -52,7 +52,7 @@ public class Book {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Loan> loans = new ArrayList<>();;
+    private List<Loan> loans = new ArrayList<>();
 
     public Long getId() {
         return id;

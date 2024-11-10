@@ -1,6 +1,7 @@
 package com.example.library.library_app.web.controllers;
 
 import com.example.library.library_app.application.LibraryUserService;
+import com.example.library.library_app.domain.entity.LibraryUser;
 import com.example.library.library_app.web.dto.LibraryUserDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -43,12 +44,11 @@ public class LibraryUserController {
             List<String> errorMessages = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.toList());
-
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
         }
 
-        var createdUserDTO = LibraryUserDTO.fromEntity(libraryUserService.create(LibraryUserDTO.toEntity(libraryUserDTO)));
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUserDTO);
+        LibraryUser createdUser = libraryUserService.create(LibraryUserDTO.toEntity(libraryUserDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(LibraryUserDTO.fromEntity(createdUser));
     }
 
     @PutMapping

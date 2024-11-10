@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -149,5 +150,18 @@ public class LibraryUserServiceTest {
 
         libraryUserService.delete(result.getId());
         verify(libraryUserRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void deleteByIdFail() {
+        Long id = 999L;
+
+        when(libraryUserRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> {
+            libraryUserService.delete(id); // This should throw an exception
+        }, "User not found with id " + id);
+
+        verify(libraryUserRepository, times(1)).findById(id);
     }
 }

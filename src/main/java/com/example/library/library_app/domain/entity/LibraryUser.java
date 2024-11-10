@@ -45,7 +45,7 @@ public class LibraryUser {
 
     @OneToMany(mappedBy = "libraryUser", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Loan> loans = new ArrayList<>();;
+    private List<Loan> loans = new ArrayList<>();
 
     public void mergeForUpdate(LibraryUser libraryUser) {
         this.name = libraryUser.getName();

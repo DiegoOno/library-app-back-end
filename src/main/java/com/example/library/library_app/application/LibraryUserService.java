@@ -47,7 +47,8 @@ public class LibraryUserService {
 
     @Transactional(readOnly = false, rollbackFor = Exception.class)
     public void delete(Long id) {
-        LibraryUser user = libraryUserRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        LibraryUser user = libraryUserRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id " + id));
         libraryUserRepository.deleteById(user.getId());
     }
 }

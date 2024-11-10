@@ -66,11 +66,20 @@ public class LibraryUserController {
         }
 
         var updatedUserDTO = LibraryUserDTO.fromEntity(libraryUserService.update(LibraryUserDTO.toEntity(libraryUserDTO)));
-        return ResponseEntity.status(HttpStatus.CREATED).body(updatedUserDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedUserDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        libraryUserService.delete(id);
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        if (isNull(id)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id is required");
+        }
+
+        try {
+            libraryUserService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found with id " + id);
+        }
     }
 }

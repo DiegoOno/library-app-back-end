@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class LibraryUserDTO {
     private String phone;
 
     @JsonIgnore
-    private List<LoanDTO> loans;
+    private List<LoanDTO> loans = new ArrayList<>();
 
     public LibraryUserDTO() {
     }

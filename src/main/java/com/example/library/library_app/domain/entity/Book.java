@@ -1,17 +1,27 @@
 package com.example.library.library_app.domain.entity;
 
-import com.example.library.library_app.domain.enums.LoanStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Book {
 
-    public Book() {}
+    public Book() {
+    }
 
     public Book(String title, String author, LocalDate releaseDate, String isbn, String category) {
+        this.title = title;
+        this.author = author;
+        this.releaseDate = releaseDate;
+        this.isbn = isbn;
+        this.category = category;
+    }
+
+    public Book(Long id, String title, String author, LocalDate releaseDate, String isbn, String category) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.releaseDate = releaseDate;
@@ -22,7 +32,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -40,20 +50,13 @@ public class Book {
     private String category;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-    private List<Loan> loans;
+    private List<Loan> loans = new ArrayList<>();;
 
-    public Loan getActiveLoan() {
-        return loans.stream()
-                .filter(loan -> loan.getStatus() == LoanStatus.ACTIVE)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -103,5 +106,13 @@ public class Book {
 
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
+    }
+
+    public void mergeForUpdate(Book book) {
+        this.title = book.getTitle();
+        this.author = book.getAuthor();
+        this.releaseDate = book.getReleaseDate();
+        this.isbn = book.getIsbn();
+        this.category = book.getCategory();
     }
 }
